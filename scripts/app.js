@@ -2,12 +2,13 @@ let currMoveNum = 1;
 let sideLength = 3;
 const $squares = $('.square');
 
-const startBut = $('.startBut');
-const endBut = $('.endBut');
+const startBut = $('#startBut');
+const endBut = $('#endBut');
 startBut.on('click', startGame);
 endBut.on('click', endGame);
 
 function startGame(){
+    currMoveNum = 1;
     $squares.html("");
     console.log("Game started");
     $squares.on('click', onSquareClick);
@@ -19,6 +20,7 @@ function endGame(){
 
 function onSquareClick(){
     let $this = $(this);
+    console.log(this.id);
     this.innerHTML = getMarker(currMoveNum);
     $this.off('click');
     checkWin();
@@ -67,7 +69,6 @@ function getMarker(i){
 function printWinAndEnd(first, second, third, player){
     if (first.innerHTML == player && second.innerHTML == player && third.innerHTML == player){
         console.log(`Player ${player} wins!`);
-        currMoveNum = 1;
         endGame();
     }
 }
