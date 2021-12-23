@@ -1,10 +1,14 @@
-let currMoveNum = 0;
+let currMoveNum = 1;
 const $squares = $('.square');
 
 const startBut = $('.startBut');
 const endBut = $('.endBut');
 startBut.on('click', startGame);
 endBut.on('click', endGame);
+
+let winConditions = [
+    []
+]
 
 function startGame(){
     console.log("Game started");
@@ -24,5 +28,5 @@ function onSquareClick(){
 }
 
 function getMarker(i){
-    return (i%2==0 ? 'X' : 'O');
+    return (i%2==1 ? 'X' : 'O');
 }
