@@ -1,74 +1,103 @@
-let currMoveNum = 1;
-let sideLength = 3;
-const $squares = $('.square');
+let currMoveNum = 0;
+const sideLength = 3;
 
-const startBut = $('#startBut');
-const endBut = $('#endBut');
-startBut.on('click', startGame);
-endBut.on('click', endGame);
+const $squares = $(".square");
+const $gameMsg = $(".gameMsg");
+const $startBut = $('#startBut');
+
+$startBut.on('click', startGame);
 
 function startGame(){
-    currMoveNum = 1;
+    currMoveNum = 0;
+    $squares.off('click');
     $squares.html("");
-    console.log("Game started");
-    $squares.on('click', onSquareClick);
+    $gameMsg.html(`Player 1's Turn`);
+    $startBut.html('Reset game');
+
+    $squares.on('click', squareClick);
 }
 
 function endGame(){
     $squares.off('click');
 }
 
-function onSquareClick(){
+function squareClick(){
     let $this = $(this);
-    console.log(this.id);
-    this.innerHTML = getMarker(currMoveNum);
+    $this.html(getMarker());
     $this.off('click');
-    checkWin();
-    currMoveNum += 1;
+    switch (checkGameOver()){
+        case 0:
+            $gameMsg.html('Player 1 Wins! Press Reset Game to play again');
+            $squares.off('click');
+            break;
+        case 1:
+            $gameMsg.html('Player 2 Wins! Press Reset Game to play again')
+            $squares.off('click');
+            break;
+        case 2:
+            $gameMsg.html('Both players tie! Press Reset Game to play again');
+            $squares.off('click');
+            break;
+        default:
+            currMoveNum += 1;
+            let currPlayer = (currMoveNum % 2 == 0) ? 1 : 2;
+            $gameMsg.html(`Player ${currPlayer}'s Turn`);
+    }
 }
 
-function checkWin(){
-    if (currMoveNum > 4){
-        const player = getMarker(currMoveNum);
+function getMarker(){
+    return (currMoveNum%2==0) ? 'X' : 'O';
+}
 
-        // Check rows
-        for (let i = 0; i < $squares.length; i += sideLength){
-            const first = $squares.get(i);
-            const second = $squares.get(i+1);
-            const third = $squares.get(i+2);
-            printWinAndEnd(first, second, third, player);
+function checkGameOver(){
+    // Check rows
+        for (let i = 0; i < 9; i += 3){
+            let first = $squares.get(i).innerHTML;
+            let second = $squares.get(i+1).innerHTML;
+            let third = $squares.get(i+2).innerHTML;
+            if (checkWin(first, second, third)){
+                return currMoveNum%2;
+            }
         }
 
         // Check columns
-        for (let i = 0; i < sideLength; i++){
-            const first = $squares.get(i);
-            const second = $squares.get(i+sideLength);
-            const third = $squares.get(i+(sideLength*2));
-            printWinAndEnd(first, second, third, player);
-        }
-
-        // Check diagonals
-        for (let i = 0; i < sideLength; i += 2){
-            const first = $squares.get(i);
-            const second = $squares.get(4);
-            if (i == 0){
-                const third = $squares.get(8);
-                printWinAndEnd(first, second, third, player);  
-            } else {
-                const third = $squares.get(6);
-                printWinAndEnd(first, second, third, player);  
+        for (let i = 0; i < 3; i++){
+            let first = $squares.get(i).innerHTML;
+            let second = $squares.get(i+3).innerHTML;
+            let third = $squares.get(i+6).innerHTML;
+            if (checkWin(first, second, third)){
+                console.log("Column win");
+                return currMoveNum%2;
             }
         }
+
+        // Check diags
+        for (let i = 0; i < 3; i += 2){
+            let first = $squares.get(i).innerHTML;
+            let second = $squares.get(4).innerHTML;
+            if (i == 0){
+                let third = $squares.get(8).innerHTML;
+                if (checkWin(first, second, third)){
+                    console.log("Sq0 diag win");
+                    return currMoveNum%2;
+                }
+            } else if (i == 2){
+                let third = $squares.get(6).innerHTML;
+                if (checkWin(first, second, third)){
+                    console.log("Sq2 diag win");
+                    return currMoveNum%2;
+                }
+            }
+        }
+    // Check ties
+    if (currMoveNum == 8){
+        return 2;
     }
 }
 
-function getMarker(i){
-    return (i%2==1 ? 'X' : 'O');
-}
-
-function printWinAndEnd(first, second, third, player){
-    if (first.innerHTML == player && second.innerHTML == player && third.innerHTML == player){
-        console.log(`Player ${player} wins!`);
-        endGame();
-    }
+function checkWin(first, second, third){
+    console.log(`First ${first}, Second ${second}, Third ${third}`);
+    if (first == second && second == third && first){
+        return true;
+    } else return false;
 }
