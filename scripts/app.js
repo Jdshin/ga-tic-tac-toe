@@ -33,19 +33,18 @@ function squareClick(){
     switch (checkGameOver()){
         case 0:
             $gameMsg.html('Player 1 Wins! Press Reset Game to play again');
-            $squares.off('click');
+            endGame();
             p1Wins += 1;
             $p1WinsElem.html(`Wins: ${p1Wins}`);
             break;
         case 1:
             $gameMsg.html('Player 2 Wins! Press Reset Game to play again');
-            $squares.off('click');
+            endGame();
             p2Wins += 1;
             $p2WinsElem.html(`Wins: ${p2Wins}`);
             break;
         case 2:
-            $gameMsg.html('Both players tie! Press Reset Game to play again');
-            $squares.off('click');
+            endGame();
             break;
         default:
             currMoveNum += 1;
