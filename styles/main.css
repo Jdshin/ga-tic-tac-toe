@@ -4,12 +4,17 @@
     justify-content: center;
 }
 
+.gameContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
 .board {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     width: 300px;
-    margin-left: auto;
-    margin-right: auto;
     padding-bottom: 1em;
 }
 
@@ -31,4 +36,11 @@
 
 .gameMsg {
     font-size: medium;
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
