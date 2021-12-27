@@ -66,7 +66,6 @@ function checkGameOver(){
             let second = $squares.get(i+3).innerHTML;
             let third = $squares.get(i+6).innerHTML;
             if (checkWin(first, second, third)){
-                console.log("Column win");
                 return currMoveNum%2;
             }
         }
@@ -78,13 +77,11 @@ function checkGameOver(){
             if (i == 0){
                 let third = $squares.get(8).innerHTML;
                 if (checkWin(first, second, third)){
-                    console.log("Sq0 diag win");
                     return currMoveNum%2;
                 }
             } else if (i == 2){
                 let third = $squares.get(6).innerHTML;
                 if (checkWin(first, second, third)){
-                    console.log("Sq2 diag win");
                     return currMoveNum%2;
                 }
             }
@@ -96,7 +93,6 @@ function checkGameOver(){
 }
 
 function checkWin(first, second, third){
-    console.log(`First ${first}, Second ${second}, Third ${third}`);
     if (first == second && second == third && first){
         return true;
     } else return false;
