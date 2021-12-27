@@ -5,6 +5,11 @@ const $squares = $(".square");
 const $gameMsg = $(".gameMsg");
 const $startBut = $('#startBut');
 
+let p1Wins = 0;
+let p2Wins = 0;
+const $p1WinsElem = $('.p1Wins');
+const $p2WinsElem = $('.p2Wins');
+
 $startBut.on('click', startGame);
 
 function startGame(){
@@ -29,10 +34,14 @@ function squareClick(){
         case 0:
             $gameMsg.html('Player 1 Wins! Press Reset Game to play again');
             $squares.off('click');
+            p1Wins += 1;
+            $p1WinsElem.html(`Wins: ${p1Wins}`);
             break;
         case 1:
-            $gameMsg.html('Player 2 Wins! Press Reset Game to play again')
+            $gameMsg.html('Player 2 Wins! Press Reset Game to play again');
             $squares.off('click');
+            p2Wins += 1;
+            $p2WinsElem.html(`Wins: ${p2Wins}`);
             break;
         case 2:
             $gameMsg.html('Both players tie! Press Reset Game to play again');
