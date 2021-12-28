@@ -10,26 +10,56 @@ let p2Wins = 0;
 const $p1WinsElem = $('.p1Wins');
 const $p2WinsElem = $('.p2Wins');
 
+let gameTimer = 30;
+const $p1Timer = $('.p1Timer');
+const $p2Timer = $('.p2Timer');
+
 $startBut.on('click', startGame);
 
 function startGame(){
+    clearState();
     currMoveNum = 0;
-    $squares.off('click');
     $squares.html("");
-    $gameMsg.html(`Player 1's Turn`);
-    $startBut.html('Reset game');
 
+    gameTimer = 30;
+    $p1Timer.timer = setInterval(countDown, 1000);
+
+    $gameMsg.html(`Player 1's Turn`);
+    $startBut.html('Reset Game');
     $squares.on('click', squareClick);
 }
 
 function endGame(){
+    clearState();
+    $p1Timer.html(`Remaining Time: 0 s`);
+    $p2Timer.html(`Remaining Time: 0 s`);
+}
+
+function clearState(){
+    clearInterval($p1Timer.timer);
+    clearInterval($p2Timer.timer);
     $squares.off('click');
 }
 
 function squareClick(){
+    // Mark and turn off event listener
     let $this = $(this);
     $this.html(getMarker());
     $this.off('click');
+    
+    let currPlayer = (currMoveNum % 2 == 0) ? 1 : 2;
+
+    //Turn off current player timer and set to zero
+    if (currPlayer == 1){
+        clearInterval($p1Timer.timer);
+        $p1Timer.html(`Remaining Time: 0 s`);
+        $p2Timer.html(`Remaining Time: 30s`);
+    } else {
+        clearInterval($p2Timer.timer);
+        $p2Timer.html(`Remaining Time: 0 s`);
+        $p1Timer.html(`Remaining Time: 30 s`);
+    }
+
     switch (checkGameOver()){
         case 0:
             $gameMsg.html('Player 1 Wins! Press Reset Game to play again');
@@ -44,17 +74,38 @@ function squareClick(){
             $p2WinsElem.html(`Wins: ${p2Wins}`);
             break;
         case 2:
+            $gameMsg.html('Both players tie! Press Reset Game to play again');
             endGame();
             break;
         default:
             currMoveNum += 1;
-            let currPlayer = (currMoveNum % 2 == 0) ? 1 : 2;
-            $gameMsg.html(`Player ${currPlayer}'s Turn`);
+            let nextPlayer = (currMoveNum % 2 == 0) ? 1 : 2;
+            $gameMsg.html(`Player ${nextPlayer}'s Turn`);
+            gameTimer = 30;
+            if (nextPlayer == 1){
+                $p1Timer.timer = setInterval(countDown, 1000);
+            } else {
+                $p2Timer.timer = setInterval(countDown, 1000);
+            }
     }
 }
 
 function getMarker(){
     return (currMoveNum%2==0) ? 'X' : 'O';
+}
+
+function countDown(){
+    switch (currMoveNum%2){
+        case 0:
+            $p1Timer.html(`Time Remaining: ${gameTimer} s`);
+            break;
+        case 1:
+            $p2Timer.html(`Time Remaining: ${gameTimer} s`);
+            break;
+        default:
+            break;
+    }
+    gameTimer -= 1;
 }
 
 function checkGameOver(){
@@ -67,7 +118,6 @@ function checkGameOver(){
                 return currMoveNum%2;
             }
         }
-
         // Check columns
         for (let i = 0; i < 3; i++){
             let first = $squares.get(i).innerHTML;
@@ -77,7 +127,6 @@ function checkGameOver(){
                 return currMoveNum%2;
             }
         }
-
         // Check diags
         for (let i = 0; i < 3; i += 2){
             let first = $squares.get(i).innerHTML;
