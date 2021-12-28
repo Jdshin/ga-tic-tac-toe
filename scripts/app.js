@@ -38,6 +38,7 @@ function endGame(){
 function clearState(){
     clearInterval($p1Timer.timer);
     clearInterval($p2Timer.timer);
+    $p2Timer.html(`Remaining Time: 0 s`);
     $squares.off('click');
 }
 
@@ -97,15 +98,24 @@ function getMarker(){
 function countDown(){
     switch (currMoveNum%2){
         case 0:
+            gameTimer -= 1;
             $p1Timer.html(`Time Remaining: ${gameTimer} s`);
+            if (gameTimer == 0){
+                clearInterval($p1Timer.timer);
+                makeRandomMove();
+            }
             break;
         case 1:
+            gameTimer -= 1;
             $p2Timer.html(`Time Remaining: ${gameTimer} s`);
+            if (gameTimer == 0){
+                clearInterval($p2Timer);
+                makeRandomMove();
+            }
             break;
         default:
             break;
     }
-    gameTimer -= 1;
 }
 
 function checkGameOver(){
@@ -153,4 +163,18 @@ function checkWin(first, second, third){
     if (first == second && second == third && first){
         return true;
     } else return false;
+}
+
+function makeRandomMove(){
+    const availableMoves = [];
+    for (let i = 0; i < $squares.length; i++){
+        if ($squares.get(i).innerHTML == ""){
+            availableMoves.push(i);
+        }
+    }
+    console.log(`Timeout - Av Moves: ${availableMoves}`);
+    const randomMove = availableMoves[Math.floor(Math.random()*availableMoves.length)];
+    console.log(`Chosen random move: ${randomMove}`);
+    const randomSquare = $squares.get(randomMove);
+    randomSquare.dispatchEvent(new Event('click'));
 }
